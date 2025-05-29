@@ -6,6 +6,32 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 
 # ======================================================================================
+# OPTION No.1:
+# Using zip() method
+L = [28.25, 10, 4, 4, 25, 4, 4, 15, 10, 5]
+i_d = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+o_d = [10, 10, 12, 12, 16, 12, 12, 12, 10, 10]
+shaft_elements = [
+    rs.ShaftElement(
+        L=length * 1e-3,  # Convert to meters
+        idl=idl * 1e-3,
+        odl=odl * 1e-3,
+        material=steel,
+        shear_effects=True,
+        rotary_inertia=True,
+        gyroscopic=True,
+    )
+    for length, idl, odl in zip(L, i_d, o_d)
+]
+shaft_elements
+
+# Option2: From excel file
+# shaft_file = Path("shaft_si.xls")
+# shaft = rs.ShaftElement.from_table(
+#     file=shaft_file, sheet_type="Model", sheet_name="Model"
+# )
+
+# ======================================================================================
 # from E and G_s
 steel = rs.Material(name="Steel", rho=7810, E=211e9, G_s=81.2e9)
 # from E and Poisson
@@ -61,32 +87,6 @@ bearings = [bearing1, bearing2]
 # ======================================================================================
 # pm0 = rs.PointMass(n=7, m=30)
 # pointmass = [pm0]
-
-# ======================================================================================
-# OPTION No.1:
-# Using zip() method
-L = [28.25, 10, 4, 4, 25, 4, 4, 15, 10, 5]
-i_d = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-o_d = [10, 10, 12, 12, 16, 12, 12, 12, 10, 10]
-shaft_elements = [
-    rs.ShaftElement(
-        L=length * 1e-3,  # Convert to meters
-        idl=idl * 1e-3,
-        odl=odl * 1e-3,
-        material=steel,
-        shear_effects=True,
-        rotary_inertia=True,
-        gyroscopic=True,
-    )
-    for length, idl, odl in zip(L, i_d, o_d)
-]
-shaft_elements
-
-# Option2: From excel file
-# shaft_file = Path("shaft_si.xls")
-# shaft = rs.ShaftElement.from_table(
-#     file=shaft_file, sheet_type="Model", sheet_name="Model"
-# )
 
 # ======================================================================================
 rotor1 = rs.Rotor(shaft_elements, disk_elements, bearings)
