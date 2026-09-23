@@ -13,7 +13,7 @@ steel2 = rs.Material(name="Steel", rho=7810, E=211e9, Poisson=0.3)
 # from G_s and Poisson
 steel3 = rs.Material(name="Steel", rho=7810, G_s=81.2e9, Poisson=0.3)
 
-print(steel)
+print(steel2)
 # returning attributes
 print("=" * 36)
 # print(f"Young's Modulus: {steel.E}")
@@ -22,10 +22,10 @@ print("=" * 36)
 # ======================================================================================
 # OPTION No.1:
 # Using zip() method
-n_list = [1, 9]
-m_list = [0.45, 0.45]
-Id_list = [0.0, 0.0]
-Ip_list = [0.0, 0.0]
+n_list = [2, 12]
+m_list = [0.26, 0.275]
+Id_list = [128e-6, 94e-6]
+Ip_list = [180e-6, 186.2e-6]
 disk_elements = [
     rs.DiskElement(
         n=n,
@@ -51,11 +51,18 @@ disk_elements
 # print(f"Kxx coefficient: {bearing2.kxx}")
 # bearing2.plot(['kxx', 'kyy'])
 
-stfx = 100e6
-stfy = 100e6
+# Bearing1
+bearing_1_node = 4
+stfx1 = 0.1e6
+stfy1 = 0.1e6
+# bearing 2
+bearing_2_node = 9
+stfx2 = 10e6
+stfy2= 10e6
+
 # bearing0 = rs.BearingElement(0, kxx=stfx, kyy=stfy, cxx=0, n_link=7)
-bearing1 = rs.BearingElement(3, kxx=stfx, kyy=stfy, cxx=0)
-bearing2 = rs.BearingElement(6, kxx=stfx, kyy=stfy, cxx=0)
+bearing1 = rs.BearingElement(bearing_1_node, kxx=stfx1, kyy=stfy1, cxx=0)
+bearing2 = rs.BearingElement(bearing_2_node, kxx=stfx2, kyy=stfy2, cxx=0)
 bearings = [bearing1, bearing2]
 
 # ======================================================================================
@@ -65,20 +72,23 @@ bearings = [bearing1, bearing2]
 # ======================================================================================
 # OPTION No.1:
 # Using zip() method
-L = [28.25, 10, 4, 4, 25, 4, 4, 15, 10, 5]
-i_d = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-o_d = [10, 10, 12, 12, 16, 12, 12, 12, 10, 10]
+L = [18, 28.7, 20.3, 4, 4, 9.25, 101.26, 9.28, 4, 4, 12.76, 6.24, 15]
+i_d = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+o_dl = [17, 17, 17, 17, 17, 17.5, 20.5, 20.5, 17, 17, 17, 17, 17]
+o_dr = [17, 17, 17, 17, 17, 20.5, 20.5, 17.5, 17, 17, 17, 17, 17]
 shaft_elements = [
     rs.ShaftElement(
         L=length * 1e-3,  # Convert to meters
         idl=idl * 1e-3,
+        idr=idr * 1e-3,
         odl=odl * 1e-3,
+        odr=odr * 1e-3,
         material=steel,
         shear_effects=True,
         rotary_inertia=True,
         gyroscopic=True,
     )
-    for length, idl, odl in zip(L, i_d, o_d)
+    for length, idl, idr, odl, odr in zip(L, i_d, i_d, o_dl, o_dr)
 ]
 shaft_elements
 
@@ -92,7 +102,7 @@ shaft_elements
 rotor1 = rs.Rotor(shaft_elements, disk_elements, bearings)
 # rotor1= rotor1.add_nodes([20e-3])
 
-path = "rotorModels/testRotor3.toml"
+path = "rotorModels/kj450.toml"
 # Save the rotor to a file
 test_rotor = rotor1.save(path)
 # test_rotor= rotor1.save("testRotor1.toml")
