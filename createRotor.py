@@ -90,7 +90,9 @@ shaft_elements = [
     )
     for length, idl, idr, odl, odr in zip(L, i_d, i_d, o_dl, o_dr)
 ]
-shaft_elements
+
+
+# shaft_elements
 
 # Option2: From excel file
 # shaft_file = Path("shaft_si.xls")

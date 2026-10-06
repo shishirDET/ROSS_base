@@ -1,5 +1,6 @@
 from pathlib import Path
 import ross as rs
+import ross.stochastic as srs
 import numpy as np
 
 # uncomment the lines below if you are having problems with plots not showing
@@ -33,7 +34,7 @@ modal = rotor.run_modal(rotor_speed, num_modes=20)
 print(f"Undamped natural frequencies:\n {modal.wn}")
 
 #enter the mode number you want to plot
-mode = 9
+mode = 2
 for i in range(mode):
     # modal.plot_mode_2d(mode, frequency_units="Hz").show()  # Plot the 2D mode shape of the rotor
     modal.plot_mode_3d(i, frequency_units="RPM").show()  # Plot the 3D mode shape of the rotor
@@ -45,7 +46,27 @@ speed_range = np.linspace(1, rotor_speed *1.3, samples)
 campbell = rotor.run_campbell(speed_range)
 campbell.plot([1, 2],frequency_units="Hz").show()
 
+# ****************Stochastic Rotor Analysis****************
+# choose the desirable percentiles or confidence intervals
+# random variables must have the same size
+
+# kxx = np.random.uniform(low=1e6, high=3e6, size=50)
+# # cxx = np.random.uniform(low=0, high=0, size=50)
+# cxx = 0
+
+# bearing1 = srs.ST_BearingElement(n=0, kxx=kxx, cxx=cxx, is_random=["kxx", "cxx"])
+# bearing2 = srs.ST_BearingElement(n=6, kxx=kxx, cxx=cxx, is_random=["kxx", "cxx"])
+# bearings = [bearing1, bearing2]
+
+# rand_rotor = srs.ST_Rotor.load(path)
+# # update the bearings with the stochastic bearings
+# rand_rotor.bearings = bearings
+
+# speed_range = np.linspace(0, rotor_speed, 31)
+# camp = rand_rotor.run_campbell(speed_range)
+# campbell.plot_nat_freq(conf_interval=[95])
+
 # ************************* UCS Map*************************
 stiff_range = (4, 9)
-ucs_results = rotor.run_ucs(stiffness_range=stiff_range, num=20, num_modes=25, kxx=0.1e6, kyy=10e6)
+ucs_results = rotor.run_ucs(stiffness_range=stiff_range, num=20, num_modes=25)
 ucs_results.plot(frequency_units="Hz").show()  # Plot the UCS map
