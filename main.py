@@ -8,7 +8,7 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 
 # ======================================================================================
-path = "rotorModels/kj450.toml"
+path = "rotorModels/DET200.toml"
 
 if not Path(path).exists():
     print(f"File {path} does not exist. Please create the rotor model first.")
